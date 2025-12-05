@@ -118,3 +118,27 @@ public class CsvManager {
 
         return list;
     }
+
+    public void saveTeams(String filePath, List<Team> teams) throws IOException {
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+
+            bw.write("TeamName,ID,Name,Game,Role,Skill,Personality");
+            bw.newLine();
+
+            for (Team team : teams) {
+                for (Participant p : team.getMembers()) {
+                    bw.write(team.getTeamName() + "," +
+                            p.getId() + "," +
+                            p.getName() + "," +
+                            p.getPreferredGame() + "," +
+                            p.getPreferredRole() + "," +
+                            p.getSkillRating() + "," +
+                            p.getPersonalityType());
+                    bw.newLine();
+                }
+            }
+        }
+    }
+}
+
