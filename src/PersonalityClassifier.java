@@ -16,3 +16,9 @@ public class PersonalityClassifier {
 
         participant.setPersonalityType(type);
     }
+    public void classifyFromRawScore(Participant participant, int rawTotal) {
+        if (participant == null) return;
+        participant.setPersonalityScore(rawTotal);
+        classify(participant);
+    }
+}
