@@ -12,3 +12,14 @@ public class Team {
     public Team(String teamName) {
         this.teamName = teamName;
     }
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public List<Participant> getMembers() {
+        return Collections.unmodifiableList(members);
+    }
+
+    public int getSize() {
+        return members.size();
+    }
