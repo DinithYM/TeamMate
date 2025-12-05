@@ -111,3 +111,20 @@ public class Team {
         return sum;
     }
 
+    @Override
+    public String toString() {
+        return teamName + " (members=" + members.size() + ")";
+    }
+
+    public int countThinkers() {
+        int count = 0;
+        for (Participant p : members) {
+            if (p.getPersonalityType() != null &&
+                    p.getPersonalityType().equalsIgnoreCase("THINKER")) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+}
