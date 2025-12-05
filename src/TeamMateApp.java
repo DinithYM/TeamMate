@@ -267,3 +267,172 @@ public class TeamMateApp {
         System.out.println("Participant registered successfully: " + p);
 
     }
+
+    private static void viewAllParticipants() {
+        if (participants.isEmpty()) {
+            System.out.println("No participants available.");
+            return;
+        }
+
+        System.out.println("    All Participants    ");
+        for (Participant p : participants) {
+            System.out.println(p);
+        }
+    }
+
+
+    private static void formTeams() {
+        if (participants.isEmpty()) {
+            System.out.println("Please add data first.");
+            return;
+        }
+
+        int size = readIntWithPrompt("Enter desired team size : ", 2, 100);
+
+        System.out.println("Forming teams...");
+
+        Thread teamThread = new Thread(() -> {
+            TeamBuilder builder = new TeamBuilder(size);
+            teams = builder.buildTeams(participants);
+        });
+
+        teamThread.start();
+
+        try {
+            teamThread.join();
+        } catch (InterruptedException e) {
+            System.out.println("Team formation thread interrupted: " + e.getMessage());
+        }
+
+
+        System.out.println("Teams formed: " + teams.size());
+        for (Team t : teams) {
+
+            int memberCount = t.getSize();
+            int totalSkill = t.getTotalSkill();
+            double avgSkill = (memberCount > 0)
+                    ? (double) totalSkill / memberCount
+                    : 0.0;
+
+            System.out.println(
+                    t.getTeamName()
+                            + " (members=" + memberCount
+                            + ", avg skill rating=" + String.format("%.2f", avgSkill)
+                            + ")"
+            );
+        }
+
+    }
+
+
+    private static void viewAllTeams() {
+        if (teams == null || teams.isEmpty()) {
+            System.out.println("No teams have been formed yet.");
+            return;
+        }
+
+        System.out.println("   All Teams   ");
+        for (Team team : teams) {
+            System.out.println(team.getTeamName() + " (members=" + team.getSize() + ")");
+            for (Participant p : team.getMembers()) {
+                System.out.println("  - " + p.getId() + " | " + p.getName()
+                        + " | Role=" + p.getPreferredRole()
+                        + " | Type=" + p.getPersonalityType());
+            }
+        }
+    }
+
+
+    private static void saveTeamsToFile() {
+        if (teams == null || teams.isEmpty()) {
+            System.out.println("No teams to save. Please form teams first.");
+            return;
+        }
+
+        System.out.print("Enter output CSV file name (default: formed_teams.csv): ");
+        String path = scanner.nextLine().trim();
+        if (path.isEmpty()) {
+            path = "formed_teams.csv";
+        }
+
+        try {
+            csvManager.saveTeams(path, teams);
+            System.out.println("Teams saved to: " + path);
+        } catch (IOException e) {
+            System.out.println("Error saving teams: " + e.getMessage());
+        }
+    }
+
+
+
+    private static int readIntWithPrompt(String prompt, int min, int max) {
+        while (true) {
+            System.out.print(prompt);
+            String line = scanner.nextLine().trim();
+            try {
+                int value = Integer.parseInt(line);
+                if (value < min || value > max) {
+                    System.out.println("Please enter a value between " + min + " and " + max + ".");
+                } else {
+                    return value;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Please try again.");
+            }
+        }
+    }
+
+    private static String mapRoleChoice(int choice) {
+        switch (choice) {
+            case 1: return "Attacker";
+            case 2: return "Defender";
+            case 3: return "Strategist";
+            case 4: return "Supporter";
+            case 5: return "Coordinator";
+            default: return "Unknown";
+        }
+    }
+
+    private static String mapGameChoice(int choice) {
+        switch (choice) {
+            case 1: return "Chess";
+            case 2: return "FIFA";
+            case 3: return "Basketball";
+            case 4: return "CS:GO";
+            case 5: return "DOTA 2";
+            case 6: return "Valorant";
+            default: return "Unknown";
+        }
+    }
+
+    private static void relogin() {
+        System.out.println("\n--- Re-login ---");
+        currentRole = Login.Role.NONE;
+
+        while (currentRole == Login.Role.NONE) {
+            currentRole = Login.login(scanner);
+            if (currentRole == Login.Role.NONE) {
+                System.out.println("Please try again.\n");
+            }
+        }
+    }
+
+
+
+    private static int findHighestId(List<Participant> list) {
+        int max = 0;
+        for (Participant p : list) {
+            try {
+
+                String num = p.getId().replaceAll("[^0-9]", "");
+                int value = Integer.parseInt(num);
+                if (value > max) {
+                    max = value;
+                }
+            } catch (Exception ignored) {}
+        }
+        return max;
+    }
+
+
+}
