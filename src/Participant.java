@@ -57,4 +57,19 @@ public class Participant extends Person {
         this.personalityType = personalityType;
     }
 
+    @Override
+    public String getSummary() {
+        return id + " | " + name
+                + " | Role=" + preferredRole
+                + " | Game=" + preferredGame
+                + " | Skill=" + skillRating
+                + " | Type=" + personalityType;
+    }
+
+    @Override
+    public String toString() {
+        return getSummary();
+    }
+}
+
 
