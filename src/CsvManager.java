@@ -22,7 +22,7 @@ public class CsvManager {
 
         // 1) Exists?
         if (!file.exists()) {
-            System.out.println("CSV verification failed: file does not exist" + filePath);
+            System.out.println("CSV verification failed: file does not exist: " + filePath);
             return false;
         }
 
