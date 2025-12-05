@@ -20,7 +20,7 @@ public class CsvManager {
     public boolean verifyParticipantsCsv(String filePath) {
         File file = new File(filePath);
 
-        // 1) Exists?
+
         if (!file.exists()) {
             System.out.println("CSV verification failed: file does not exist: " + filePath);
             return false;
@@ -99,7 +99,7 @@ public class CsvManager {
                     continue;
                 }
 
-                // (optional extra rule)
+
                 if (skill < 1 || skill > 10) {
                     System.out.println("Skipping row due to invalid skill range (1–10): " + line);
                     continue;
