@@ -153,3 +153,51 @@ public class TeamBuilder {
 
         }
     }
+
+    private Team chooseBestTeam(Participant p, List<Team> teams) {
+
+        Team best = null;
+        int bestScore = Integer.MAX_VALUE;
+
+        String game = p.getPreferredGame();
+        String role = p.getPreferredRole();
+        String type = p.getPersonalityType();
+
+        for (Team t : teams) {
+
+
+            if (t.getSize() >= teamSize) continue;
+
+
+            if (game != null && t.countByGame(game) >= maxSameGamePerTeam) continue;
+
+
+            if ("THINKER".equalsIgnoreCase(type) && t.countThinkers() >= maxThinkersPerTeam) {
+                continue;
+            }
+
+
+            int score = t.getTotalSkill();
+
+
+            if (role != null &&
+                    t.countDistinctRoles() < desiredDistinctRoles &&
+                    !t.hasRole(role)) {
+                score -= 10;
+            }
+
+
+            if ("BALANCED".equalsIgnoreCase(type)) {
+                score -= 3;
+            }
+
+            if (score < bestScore) {
+                bestScore = score;
+                best = t;
+            }
+        }
+
+        return best;
+    }
+}
+
