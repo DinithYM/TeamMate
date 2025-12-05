@@ -19,3 +19,6 @@ public abstract class Person {
     public void setName(String name) {
         this.name = name;
     }
+
+    public abstract String getSummary();
+}
